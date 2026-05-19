@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Risk Profiling & PPS Dashboard</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./style.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .scorecard-table th, .scorecard-table td {
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .scorecard-table tbody tr:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .progress-bar-bg {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            height: 8px;
+            width: 100%;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo" style="flex-direction: column; text-align: center; margin-bottom: 2rem;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" alt="Jata Negara" style="width: 85px; margin-bottom: 1rem; filter: drop-shadow(0px 4px 10px rgba(255, 255, 255, 0.15));">
+                <h2 style="font-family: 'Outfit'; color: #f59e0b; font-size: 1.5rem; letter-spacing: 1.5px; text-transform: uppercase;">EOC KEDAH<br><span style="color: #94a3b8; font-size: 0.75rem; letter-spacing: 3px;">Command Center</span></h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="index.html">Dashboard Overview</a></li>
+                <li><a href="verify.html">PPS Verification</a></li>
+                <li><a href="verify_highrisk.html">High-Risk Clinics Ver.</a></li>
+                <li><a href="drp.html">Risk Profiles (DRP)</a></li>
+                <li><a href="drm.html">Logistics & Assets (DRM)</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1 style="color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.3);">Kedah State Natural Disaster Risk Profile</h1>
+                <div class="user-profile">
+                    <span>Admin JKN</span>
+                    <div class="avatar"></div>
+                </div>
+            </header>
+
+            <!-- State Level Data -->
+            <h3 style="margin-bottom: 1rem; color: var(--accent-color); font-family: 'Outfit';">1. Pusat Pemindahan Sementara (PPS)</h3>
+            <section class="metrics-grid">
+                <div class="metric-card glass">
+                    <div class="metric-info">
+                        <h3>Total PPS (Statewide)</h3>
+                        <h2 id="total-pps">--</h2>
+                    </div>
+                    <div class="metric-icon">🏫</div>
+                </div>
+                <div class="metric-card glass">
+                    <div class="metric-info">
+                        <h3>Verified 2026</h3>
+                        <h2 id="pps-verified">--</h2>
+                    </div>
+                    <div class="metric-icon">✅</div>
+                </div>
+                <div class="metric-card glass">
+                    <div class="metric-info">
+                        <h3>Currently Active</h3>
+                        <h2 id="pps-active">--</h2>
+                    </div>
+                    <div class="metric-icon">🟢</div>
+                </div>
+            </section>
+
+            <h3 style="margin-bottom: 1rem; color: var(--accent-color); font-family: 'Outfit';">2. Disaster Risk Profiles (DRP)</h3>
+            <section class="metrics-grid">
+                <div class="metric-card glass" style="border-left: 4px solid var(--danger);">
+                    <div class="metric-info">
+                        <h3>High Risk Areas</h3>
+                        <h2 id="high-risks">--</h2>
+                    </div>
+                    <div class="metric-icon">⚠️</div>
+                </div>
+                <div class="metric-card glass" style="border-left: 4px solid var(--warning);">
+                    <div class="metric-info">
+                        <h3>Medium Risk Areas</h3>
+                        <h2 id="medium-risks">--</h2>
+                    </div>
+                    <div class="metric-icon">📊</div>
+                </div>
+                <div class="metric-card glass">
+                    <div class="metric-info">
+                        <h3>Total Hazards Identified</h3>
+                        <h2 id="total-hazards">--</h2>
+                    </div>
+                    <div class="metric-icon">🌪️</div>
+                </div>
+            </section>
+
+            <h3 style="margin-bottom: 1rem; color: var(--accent-color); font-family: 'Outfit';">3. Logistics & Assets Readiness (DRM)</h3>
+            <section class="metrics-grid">
+                <div class="metric-card glass">
+                    <div class="metric-info">
+                        <h3>Total Medical Teams (RAT/RRT)</h3>
+                        <h2 id="total-teams">--</h2>
+                    </div>
+                    <div class="metric-icon">⚕️</div>
+                </div>
+                <div class="metric-card glass">
+                    <div class="metric-info">
+                        <h3>Total 4WD Vehicles</h3>
+                        <h2 id="total-4wd">--</h2>
+                    </div>
+                    <div class="metric-icon">🚙</div>
+                </div>
+                <div class="metric-card glass">
+                    <div class="metric-info">
+                        <h3>Ambulances Ready</h3>
+                        <h2 id="total-amb">--</h2>
+                    </div>
+                    <div class="metric-icon">🚑</div>
+                </div>
+            </section>
+
+            <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 3rem 0;">
+
+            <!-- District Scorecard -->
+            <h2 style="margin-bottom: 1.5rem; font-family: 'Outfit';">District Deep-Dive Scorecard</h2>
+            <section class="scorecard-container glass" style="padding: 0; margin-bottom: 3rem; overflow: hidden;">
+                <div style="overflow-x: auto;">
+                    <table class="scorecard-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="background: rgba(0,0,0,0.3); color: var(--text-secondary);">
+                                <th style="padding: 1.2rem 1.5rem;">District</th>
+                                <th style="padding: 1.2rem 1.5rem;">PPS Verification Progress</th>
+                                <th style="padding: 1.2rem 1.5rem; text-align: center;">High Risks (DRP)</th>
+                                <th style="padding: 1.2rem 1.5rem; text-align: center;">Med. Teams</th>
+                                <th style="padding: 1.2rem 1.5rem; text-align: center;">Ambulances</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scorecard-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Map and Chart Section -->
+            <h2 style="margin-bottom: 1.5rem; font-family: 'Outfit';">Geospatial Distribution</h2>
+            <section class="dashboard-grid">
+                <div class="map-container glass">
+                    <div class="section-header">
+                        <h2>PPS Geospatial Map</h2>
+                        <select id="district-filter" class="custom-select">
+                            <option value="All">All Districts</option>
+                            <option value="Baling">Baling</option>
+                            <option value="Kota Setar">Kota Setar</option>
+                            <option value="Kuala Muda">Kuala Muda</option>
+                            <option value="Pendang">Pendang</option>
+                            <option value="Padang Terap">Padang Terap</option>
+                        </select>
+                    </div>
+                    <div id="map" class="map"></div>
+                </div>
+                
+                <div class="charts-container">
+                    <div class="chart-card glass" style="display: flex; flex-direction: column;">
+                        <div style="flex: 1; min-height: 0; position: relative;">
+                            <canvas id="verificationChart"></canvas>
+                        </div>
+                        <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;"><i>Figure 1.</i> Verification Progress</p>
+                    </div>
+                    <div class="chart-card glass" style="display: flex; flex-direction: column;">
+                        <div style="flex: 1; min-height: 0; position: relative;">
+                            <canvas id="riskChart"></canvas>
+                        </div>
+                        <p style="text-align: center; margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;"><i>Figure 2.</i> State Risk Distribution</p>
+                    </div>
+                </div>
+            </section>
+        
+            <footer style="text-align: center; margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase;">
+                DEVELOPED BY KPAS JKN KEDAH 2026
+            </footer>
+        </main>
+    </div>
+
+    <!-- Deep Dive Modal -->
+    <div id="deepDiveModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+        <div class="modal-content glass" style="max-width: 900px; width: 90%; max-height: 85vh; overflow-y: auto; padding: 2rem; position: relative;">
+            <span class="close-modal" onclick="closeModal()" style="position: absolute; right: 1.5rem; top: 1.5rem; font-size: 2rem; cursor: pointer; color: var(--text-secondary);">&times;</span>
+            <h2 id="modal-district-title" style="margin-bottom: 1.5rem; color: var(--accent-color); font-family: 'Outfit'; font-size: 2rem;">District Details</h2>
+            
+            <h3 style="color: var(--success); margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; font-family: 'Outfit';">🏥 Logistics & Assets (PKD & Hospitals)</h3>
+            <div style="overflow-x: auto; margin-bottom: 2.5rem;">
+                <table class="scorecard-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: rgba(0,0,0,0.3); color: var(--text-secondary);">
+                            <th style="padding: 1rem;">Facility Name</th>
+                            <th style="padding: 1rem; text-align: center;">Medical Teams</th>
+                            <th style="padding: 1rem; text-align: center;">4WD Vehicles</th>
+                            <th style="padding: 1rem; text-align: center;">Ambulances</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-drm-body"></tbody>
+                </table>
+            </div>
+
+            <h3 style="color: var(--danger); margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; font-family: 'Outfit';">⚠️ Disaster Risk Profiles (Hazards)</h3>
+            <div style="overflow-x: auto; margin-bottom: 2.5rem;">
+                <table class="scorecard-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: rgba(0,0,0,0.3); color: var(--text-secondary);">
+                            <th style="padding: 1rem;">Mukim / Area</th>
+                            <th style="padding: 1rem;">Hazard Type</th>
+                            <th style="padding: 1rem; text-align: center;">Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-drp-body"></tbody>
+                </table>
+            </div>
+
+            <h3 style="color: #fbbf24; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem; font-family: 'Outfit';">🚨 High-Risk Health Facilities & Evacuation Plans (Live)</h3>
+            <div style="overflow-x: auto;">
+                <table class="scorecard-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: rgba(0,0,0,0.3); color: var(--text-secondary);">
+                            <th style="padding: 1rem;">High-Risk Facility</th>
+                            <th style="padding: 1rem;">Alternative Facility</th>
+                            <th style="padding: 1rem; text-align: center;">Status</th>
+                            <th style="padding: 1rem;">Logistics Needed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-highrisk-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="./app.js"></script>
+</body>
+</html>

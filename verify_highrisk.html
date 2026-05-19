@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-Risk Clinics Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo" style="flex-direction: column; text-align: center; margin-bottom: 2rem;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" alt="Jata Negara" style="width: 85px; margin-bottom: 1rem; filter: drop-shadow(0px 4px 10px rgba(255, 255, 255, 0.15));">
+                <h2 style="font-family: 'Outfit'; color: #f59e0b; font-size: 1.5rem; letter-spacing: 1.5px; text-transform: uppercase;">EOC KEDAH<br><span style="color: #94a3b8; font-size: 0.75rem; letter-spacing: 3px;">Command Center</span></h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Dashboard Overview</a></li>
+                <li><a href="verify.html">PPS Verification</a></li>
+                <li class="active"><a href="verify_highrisk.html">High-Risk Clinics Ver.</a></li>
+                <li><a href="drp.html">Risk Profiles (DRP)</a></li>
+                <li><a href="drm.html">Logistics & Assets (DRM)</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1 style="color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.3);">High-Risk Facilities Data Entry (2026)</h1>
+                <div class="user-profile">
+                    <span>PKD Officer</span>
+                    <div class="avatar"></div>
+                </div>
+            </header>
+
+            <section class="verify-container glass" style="padding: 2rem;">
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Please search for your district's High-Risk Facility. Update its alternative evacuation location, logistics needs, and contact person. This data will be directly synced to the State Dashboard via Google Sheets.
+                </p>
+
+                <form id="verify-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="selectDistrict">Select District</label>
+                            <select id="selectDistrict" class="form-control" required>
+                                <option value="" disabled selected>Select District...</option>
+                                <option value="Baling">Baling</option>
+                                <option value="Bandar Baharu">Bandar Baharu</option>
+                                <option value="Kota Setar">Kota Setar</option>
+                                <option value="Kuala Muda">Kuala Muda</option>
+                                <option value="Kubang Pasu">Kubang Pasu</option>
+                                <option value="Kulim">Kulim</option>
+                                <option value="Langkawi">Langkawi</option>
+                                <option value="Padang Terap">Padang Terap</option>
+                                <option value="Pendang">Pendang</option>
+                                <option value="Pokok Sena">Pokok Sena</option>
+                                <option value="Sik">Sik</option>
+                                <option value="Yan">Yan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="selectFacility">Select High-Risk Facility</label>
+                            <select id="selectFacility" class="form-control" disabled required>
+                                <option value="" disabled selected>Select District First...</option>
+                            </select>
+                        </div>
+                    </div>
+                        <div class="form-group">
+                            <label for="daerah">Daerah (District)</label>
+                            <input type="text" id="daerah" class="form-control" readonly style="background: rgba(0,0,0,0.5);">
+                        </div>
+                        <div class="form-group">
+                            <label for="facilityName">Facility Name</label>
+                            <input type="text" id="facilityName" class="form-control" placeholder="Enter facility name if adding a new one" required>
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                    <h3 style="margin-bottom: 1.5rem; font-family: 'Outfit';">Evacuation & Verification Details</h3>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="altFacility">Alternative Facility Target</label>
+                            <input type="text" id="altFacility" class="form-control" placeholder="E.g. KK Kupang" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="verificationStatus">Verification Status</label>
+                            <select id="verificationStatus" class="form-control" required>
+                                <option value="" disabled selected>Select status...</option>
+                                <option value="Verified">Verified</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="contactPerson">Contact Person (In-Charge)</label>
+                            <input type="text" id="contactPerson" class="form-control" placeholder="Name of officer in charge">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactNumber">Contact Number</label>
+                            <input type="text" id="contactNumber" class="form-control" placeholder="Phone number">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="logistics">Logistics Needed to Move (Trucks, Manpower, etc.)</label>
+                        <textarea id="logistics" class="form-control" rows="3" placeholder="List any assets needed to evacuate this facility..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">Submit Facility Data to Google Sheets</button>
+                    <div id="submitMessage" style="margin-top: 1rem; text-align: center; font-weight: 500;"></div>
+                </form>
+            </section>
+        
+            <footer style="text-align: center; margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase;">
+                DEVELOPED BY KPAS JKN KEDAH 2026
+            </footer>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="./verify_highrisk.js"></script>
+</body>
+</html>

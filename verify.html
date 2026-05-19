@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPS Verification System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo" style="flex-direction: column; text-align: center; margin-bottom: 2rem;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Coat_of_arms_of_Malaysia.svg" alt="Jata Negara" style="width: 85px; margin-bottom: 1rem; filter: drop-shadow(0px 4px 10px rgba(255, 255, 255, 0.15));">
+                <h2 style="font-family: 'Outfit'; color: #f59e0b; font-size: 1.5rem; letter-spacing: 1.5px; text-transform: uppercase;">EOC KEDAH<br><span style="color: #94a3b8; font-size: 0.75rem; letter-spacing: 3px;">Command Center</span></h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Dashboard Overview</a></li>
+                <li class="active"><a href="verify.html">PPS Verification</a></li>
+                <li><a href="verify_highrisk.html">High-Risk Clinics Ver.</a></li>
+                <li><a href="drp.html">Risk Profiles (DRP)</a></li>
+                <li><a href="drm.html">Logistics & Assets (DRM)</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1 style="color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.3);">PPS Data Verification (2026)</h1>
+                <div class="user-profile">
+                    <span>PKD Officer</span>
+                    <div class="avatar"></div>
+                </div>
+            </header>
+
+            <section class="verify-container glass" style="padding: 2rem;">
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Please search for the Pusat Pemindahan Sementara (PPS) in your district and update its current status. This data will be directly synced to the State Dashboard.
+                </p>
+
+                <form id="verify-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="selectDistrict">Select District</label>
+                            <select id="selectDistrict" class="form-control" required>
+                                <option value="" disabled selected>Select District...</option>
+                                <option value="Baling">Baling</option>
+                                <option value="Bandar Baharu">Bandar Baharu</option>
+                                <option value="Kota Setar">Kota Setar</option>
+                                <option value="Kuala Muda">Kuala Muda</option>
+                                <option value="Kubang Pasu">Kubang Pasu</option>
+                                <option value="Kulim">Kulim</option>
+                                <option value="Langkawi">Langkawi</option>
+                                <option value="Padang Terap">Padang Terap</option>
+                                <option value="Pendang">Pendang</option>
+                                <option value="Pokok Sena">Pokok Sena</option>
+                                <option value="Sik">Sik</option>
+                                <option value="Yan">Yan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="selectPPS">Select PPS</label>
+                            <select id="selectPPS" class="form-control" disabled required>
+                                <option value="" disabled selected>Select District First...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="daerah">Daerah (District)</label>
+                            <input type="text" id="daerah" class="form-control" readonly style="background: rgba(0,0,0,0.5);">
+                        </div>
+                        <div class="form-group">
+                            <label>GPS Coordinates</label>
+                            <input type="text" id="gps" class="form-control" readonly style="background: rgba(0,0,0,0.5);">
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                    <h3 style="margin-bottom: 1.5rem; font-family: 'Outfit';">Verification Details</h3>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="statusLawatan">Status Lawatan (Visited Status)</label>
+                            <select id="statusLawatan" class="form-control" required>
+                                <option value="" disabled selected>Select status...</option>
+                                <option value="Telah Dilawati">Telah Dilawati (Verified on site)</option>
+                                <option value="Belum Dilawati">Belum Dilawati (Not verified)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tarikhLawatan">Tarikh Lawatan (Date of Visit)</label>
+                            <input type="date" id="tarikhLawatan" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="namaPegawai">Nama Pegawai Pemeriksa</label>
+                            <input type="text" id="namaPegawai" class="form-control" placeholder="Enter full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="statusFungsi">Status Fungsi Semasa (Current Functionality)</label>
+                            <select id="statusFungsi" class="form-control" required>
+                                <option value="" disabled selected>Select functionality...</option>
+                                <option value="Masih Berfungsi">Masih Berfungsi (Active)</option>
+                                <option value="Tidak Berfungsi">Tidak Berfungsi (Inactive)</option>
+                                <option value="Tutup Kekal">Tutup Kekal (Permanently Closed)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="catatan">Sebab Tidak Berfungsi / Catatan (Remarks)</label>
+                        <textarea id="catatan" class="form-control" rows="3" placeholder="Enter remarks if any..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">Submit Verification Data</button>
+                    <div id="submitMessage" style="margin-top: 1rem; text-align: center; font-weight: 500;"></div>
+                </form>
+            </section>
+        
+            <footer style="text-align: center; margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border); color: var(--text-secondary); font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase;">
+                DEVELOPED BY KPAS JKN KEDAH 2026
+            </footer>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="./verify.js"></script>
+</body>
+</html>
